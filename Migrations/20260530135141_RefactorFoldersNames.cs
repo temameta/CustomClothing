@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CustomClothing.Migrations
 {
     /// <inheritdoc />
-    public partial class FixedInitialData : Migration
+    public partial class RefactorFoldersNames : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -57,9 +57,12 @@ namespace CustomClothing.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Title = table.Column<string>(type: "text", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false),
+                    CustomerName = table.Column<string>(type: "text", nullable: false),
                     CustomerPhone = table.Column<string>(type: "text", nullable: false),
+                    DeliveryAddress = table.Column<string>(type: "text", nullable: true),
                     ClothingCategoryId = table.Column<int>(type: "integer", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Status = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -68,6 +71,30 @@ namespace CustomClothing.Migrations
                         name: "FK_DesignRequests_Categories_ClothingCategoryId",
                         column: x => x.ClothingCategoryId,
                         principalTable: "Categories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Orders",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    CompletedWorkId = table.Column<int>(type: "integer", nullable: false),
+                    CustomerName = table.Column<string>(type: "text", nullable: false),
+                    CustomerPhone = table.Column<string>(type: "text", nullable: false),
+                    DeliveryAddress = table.Column<string>(type: "text", nullable: true),
+                    OrderDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Status = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Orders", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Orders_CompletedWorks_CompletedWorkId",
+                        column: x => x.CompletedWorkId,
+                        principalTable: "CompletedWorks",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -94,11 +121,11 @@ namespace CustomClothing.Migrations
 
             migrationBuilder.InsertData(
                 table: "DesignRequests",
-                columns: new[] { "Id", "ClothingCategoryId", "CreatedAt", "CustomerPhone", "Description", "Title" },
+                columns: new[] { "Id", "ClothingCategoryId", "CreatedAt", "CustomerName", "CustomerPhone", "DeliveryAddress", "Description", "Status", "Title" },
                 values: new object[,]
                 {
-                    { 1, 1, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "+79001112233", "Хочу вышивку золотого дракона на всю спину", "Худи с драконом" },
-                    { 2, 3, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "88005553535", "Нужны кастомные нашивки по бокам", "Шорты для бега" }
+                    { 1, 1, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Алексей", "+79001112233", "ул. Ленина 1", "Хочу вышивку золотого дракона", 0, "Худи с драконом" },
+                    { 2, 3, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Алена", "88005553535", "ул. Карла Маркса 2", "Нужны кастомные нашивки по бокам", 0, "Шорты для бега" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -110,16 +137,24 @@ namespace CustomClothing.Migrations
                 name: "IX_DesignRequests_ClothingCategoryId",
                 table: "DesignRequests",
                 column: "ClothingCategoryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_CompletedWorkId",
+                table: "Orders",
+                column: "CompletedWorkId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "CompletedWorks");
+                name: "DesignRequests");
 
             migrationBuilder.DropTable(
-                name: "DesignRequests");
+                name: "Orders");
+
+            migrationBuilder.DropTable(
+                name: "CompletedWorks");
 
             migrationBuilder.DropTable(
                 name: "Categories");
