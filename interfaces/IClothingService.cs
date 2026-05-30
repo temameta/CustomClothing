@@ -1,6 +1,7 @@
-﻿using CustomClothing.Dto;
+﻿using CustomClothing.dto.request;
+using CustomClothing.dto.response;
 
-namespace CustomClothing.Service;
+namespace CustomClothing.interfaces;
 
 public interface IClothingService
 {
@@ -9,4 +10,6 @@ public interface IClothingService
     Task CreateRequestAsync(CreateDesignRequestDto dto);
     Task FinalizeRequestAsync(int requestId, FinalizeRequestDto dto);
     Task<OrderResponseDto> PlaceOrderAsync(CreateOrderDto dto);
+    Task DeleteRequestAsync(int id);
+    Task<DesignRequestResponse?> GetRequestByIdAsync(int id); 
 }
