@@ -8,6 +8,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<ClothingCategory> Categories => Set<ClothingCategory>();
     public DbSet<CompletedWork> CompletedWorks => Set<CompletedWork>();
     public DbSet<DesignRequest> DesignRequests => Set<DesignRequest>();
+    public DbSet<Order> Orders => Set<Order>();
 
      protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -45,4 +45,18 @@ public class ClothingController(IClothingService clothingService) : ControllerBa
             return BadRequest(ex.Message);
         }
     }
+    
+    [HttpPost("order")]
+    public async Task<ActionResult<OrderResponseDto>> PlaceOrder([FromBody] CreateOrderDto dto)
+    {
+        try
+        {
+            var result = await clothingService.PlaceOrderAsync(dto);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { Message = ex.Message });
+        }
+    }
 }

@@ -60,4 +60,35 @@ public class ClothingService(AppDbContext context) : IClothingService
     
         await context.SaveChangesAsync();
     }
+    
+    public async Task<OrderResponseDto> PlaceOrderAsync(CreateOrderDto dto)
+    {
+        var work = await context.CompletedWorks
+            .FirstOrDefaultAsync(w => w.Id == dto.CompletedWorkId);
+
+        if (work == null) 
+            throw new Exception("Предмет одежды не найден в каталоге.");
+
+        if (!work.IsPublic)
+            throw new Exception("Этот предмет недоступен для заказа.");
+
+        var order = new Order
+        {
+            CompletedWorkId = dto.CompletedWorkId,
+            CustomerName = dto.CustomerName,
+            CustomerPhone = dto.CustomerPhone,
+            DeliveryAddress = dto.DeliveryAddress,
+            Status = OrderStatus.New
+        };
+
+        context.Orders.Add(order);
+        await context.SaveChangesAsync();
+
+        return new OrderResponseDto(
+            order.Id, 
+            work.Name, 
+            order.Status.ToString(), 
+            order.OrderDate
+        );
+    }
 }
