@@ -45,5 +45,21 @@ public static class AdminEndpoints {
             await service.DeleteOrderAsync(id); return Results.NoContent();
         })
         .WithSummary("Удалить заказ").Produces(204);
+        admin.MapPost("/categories", async (CreateCategoryDto dto, IAdminService service) =>
+            {
+                try
+                {
+                    var result = await service.CreateCategoryAsync(dto);
+                    return Results.Created($"/api/categories", result);
+                }
+                catch (ArgumentException ex)
+                {
+                    return Results.Json(new ErrorResponse(ex.Message), statusCode: 400);
+                }
+            })
+            .WithSummary("Добавить новую категорию одежды")
+            .WithDescription("Позволяет менеджеру расширить список доступных типов одежды (например, добавить 'Свитшоты').")
+            .Produces<CategoryDto>(StatusCodes.Status201Created)
+            .Produces<ErrorResponse>(StatusCodes.Status400BadRequest);
     }
 }

@@ -11,4 +11,5 @@ public interface IAdminService
     Task<IEnumerable<OrderAdminResponse>> GetAllOrdersAsync();
     Task<OrderAdminResponse?> GetOrderByIdAsync(int id);
     Task DeleteOrderAsync(int id);
+    Task<CategoryDto> CreateCategoryAsync(CreateCategoryDto dto);
 }

@@ -1,6 +1,8 @@
 ﻿using CustomClothing.database;
 using CustomClothing.dto.response;
+using CustomClothing.dto.request;
 using CustomClothing.interfaces;
+using CustomClothing.model;
 using Microsoft.EntityFrameworkCore;
 
 namespace CustomClothing.services;
@@ -55,5 +57,21 @@ public class AdminService(AppDbContext context) : IAdminService
             context.Orders.Remove(o);
             await context.SaveChangesAsync();
         }
+    }
+    
+    public async Task<CategoryDto> CreateCategoryAsync(CreateCategoryDto dto)
+    {
+        if (string.IsNullOrWhiteSpace(dto.Name))
+            throw new ArgumentException("Название категории не может быть пустым.");
+
+        var category = new ClothingCategory
+        {
+            Name = dto.Name
+        };
+
+        context.Categories.Add(category);
+        await context.SaveChangesAsync();
+
+        return new CategoryDto(category.Id, category.Name);
     }
 }
