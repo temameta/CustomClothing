@@ -1,4 +1,4 @@
-﻿namespace CustomClothing.Dto;
+﻿namespace CustomClothing.dto.response;
 
 public record OrderResponseDto(
     int Id,
