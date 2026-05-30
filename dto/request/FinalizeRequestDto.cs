@@ -1,4 +1,4 @@
-﻿namespace CustomClothing.Dto;
+﻿namespace CustomClothing.dto.request;
 
 /// <summary> Параметры финализации заявки </summary>
 public record FinalizeRequestDto

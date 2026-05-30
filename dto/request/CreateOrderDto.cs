@@ -1,4 +1,4 @@
-﻿namespace CustomClothing.Dto;
+﻿namespace CustomClothing.dto.request;
 
 /// <summary> Данные для заказа готовой вещи из каталога </summary>
 public record CreateOrderDto
