@@ -6,5 +6,6 @@ public record OrderAdminResponse(
     string CustomerName, 
     string CustomerPhone, 
     string? DeliveryAddress, 
-    DateTime OrderDate
+    DateTime OrderDate,
+    string Status
 );

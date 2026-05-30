@@ -65,5 +65,27 @@ public static class ClothingEndpoints
         .WithSummary("Заказать уже готовую вещь из каталога")
         .Produces<OrderResponseDto>(StatusCodes.Status201Created)
         .Produces<ErrorResponse>(StatusCodes.Status400BadRequest);
+        
+        customer.MapPost("/orders/{id}/cancel", async (int id, IClothingService service) =>
+            {
+                try
+                {
+                    await service.CancelOrderAsync(id);
+                    return Results.Ok(new { message = "Заказ успешно отменен." });
+                }
+                catch (KeyNotFoundException ex)
+                {
+                    return Results.Json(new ErrorResponse(ex.Message), statusCode: 404);
+                }
+                catch (InvalidOperationException ex)
+                {
+                    return Results.Json(new ErrorResponse(ex.Message), statusCode: 400);
+                }
+            })
+            .WithSummary("Отменить заказ")
+            .WithDescription("Позволяет пользователю отменить свой заказ, если он еще не был обработан менеджером.")
+            .Produces(StatusCodes.Status200OK)
+            .Produces<ErrorResponse>(StatusCodes.Status400BadRequest)
+            .Produces<ErrorResponse>(StatusCodes.Status404NotFound);
     }
 }

@@ -106,4 +106,18 @@ public class ClothingService(AppDbContext context) : IClothingService
             order.OrderDate
         );
     }
+    
+    public async Task CancelOrderAsync(int orderId)
+    {
+        var order = await context.Orders.FindAsync(orderId);
+
+        if (order == null)
+            throw new KeyNotFoundException("Заказ не найден.");
+        
+        if (order.Status != OrderStatus.New)
+            throw new InvalidOperationException("Нельзя отменить заказ, который уже обработан или отменен.");
+
+        order.Status = OrderStatus.Cancelled;
+        await context.SaveChangesAsync();
+    }
 }
