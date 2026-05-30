@@ -29,7 +29,9 @@ public class ClothingService(AppDbContext context) : IClothingService
         {
             Title = dto.Title,
             Description = dto.Description,
+            CustomerName = dto.CustomerName,
             CustomerPhone = dto.CustomerPhone,
+            DeliveryAddress = dto.DeliveryAddress,
             ClothingCategoryId = dto.CategoryId
         };
 
@@ -40,11 +42,10 @@ public class ClothingService(AppDbContext context) : IClothingService
     public async Task FinalizeRequestAsync(int requestId, FinalizeRequestDto dto)
     {
         var request = await context.DesignRequests
-            .Include(r => r.Category)
             .FirstOrDefaultAsync(r => r.Id == requestId);
 
         if (request == null) throw new Exception("Заявка не найдена");
-        if (request.Status == RequestStatus.Completed) throw new Exception("Заявка уже была завершена");
+        if (request.Status == RequestStatus.Completed) throw new Exception("Заявка уже завершена");
         
         request.Status = RequestStatus.Completed;
         
@@ -55,9 +56,21 @@ public class ClothingService(AppDbContext context) : IClothingService
             IsPublic = dto.IsPublic,
             ClothingCategoryId = request.ClothingCategoryId
         };
-
         context.CompletedWorks.Add(completedWork);
-    
+        
+        await context.SaveChangesAsync();
+        
+        var order = new Order
+        {
+            CompletedWorkId = completedWork.Id,
+            CustomerName = request.CustomerName,
+            CustomerPhone = request.CustomerPhone,
+            DeliveryAddress = request.DeliveryAddress,
+            Status = OrderStatus.Paid,
+            OrderDate = DateTime.UtcNow
+        };
+        context.Orders.Add(order);
+
         await context.SaveChangesAsync();
     }
     
