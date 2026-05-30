@@ -14,6 +14,7 @@ builder.Services.AddDbContext<AppDbContext>(opt =>
     opt.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<IClothingService, ClothingService>();
+builder.Services.AddScoped<IAdminService, AdminService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
@@ -30,6 +31,7 @@ app.MapGet("/", () => Results.Content(
     .ExcludeFromDescription();
 
 app.MapClothingEndpoints();
+app.MapAdminEndpoints();
 
 app.UseSwagger();
 app.UseSwaggerUI();

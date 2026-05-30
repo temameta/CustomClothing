@@ -106,29 +106,4 @@ public class ClothingService(AppDbContext context) : IClothingService
             order.OrderDate
         );
     }
-    
-    public async Task DeleteRequestAsync(int id) {
-        var req = await context.DesignRequests.FindAsync(id);
-        if (req != null) { context.DesignRequests.Remove(req); await context.SaveChangesAsync(); }
-    }
-    
-    public async Task<DesignRequestResponse?> GetRequestByIdAsync(int id) 
-    {
-        var req = await context.DesignRequests
-            .Include(r => r.Category)
-            .FirstOrDefaultAsync(r => r.Id == id);
-
-        if (req == null) return null;
-        
-        return new DesignRequestResponse(
-            req.Id,
-            req.Title,
-            req.Description,
-            req.CustomerName,
-            req.CustomerPhone,
-            req.DeliveryAddress,
-            req.Category?.Name ?? "Без категории",
-            req.Status.ToString()
-        );
-    }
 }

@@ -10,6 +10,4 @@ public interface IClothingService
     Task CreateRequestAsync(CreateDesignRequestDto dto);
     Task FinalizeRequestAsync(int requestId, FinalizeRequestDto dto);
     Task<OrderResponseDto> PlaceOrderAsync(CreateOrderDto dto);
-    Task DeleteRequestAsync(int id);
-    Task<DesignRequestResponse?> GetRequestByIdAsync(int id); 
 }
