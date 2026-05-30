@@ -1,4 +1,4 @@
-﻿namespace CustomClothing.Models;
+﻿namespace CustomClothing.model;
 
 public class Order
 {
