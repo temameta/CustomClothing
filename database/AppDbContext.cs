@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using CustomClothing.Models;
+using CustomClothing.model;
 
-namespace CustomClothing.Data;
+namespace CustomClothing.database;
 
 public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
 {
