@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,17 +15,23 @@ builder.Services.AddDbContext<AppDbContext>(opt =>
 
 builder.Services.AddScoped<IClothingService, ClothingService>();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    var xmlFilename = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+});
 
 var app = builder.Build();
 
-app.MapGet("/", () => Results.Content("<h1>Custom Clothing API</h1><p>Документация: <a href='/swagger'>Swagger</a></p>", "text/html"));
+app.MapGet("/", () => Results.Content(
+        "<h1>Custom Clothing API</h1><p>Документация: <a href='/swagger'>Swagger</a></p>", 
+        "text/html; charset=utf-8"
+    ))
+    .ExcludeFromDescription();
 
 app.MapClothingEndpoints();
 
-if (app.Environment.IsDevelopment()) {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.Run();
